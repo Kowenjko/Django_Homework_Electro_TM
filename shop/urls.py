@@ -5,7 +5,7 @@ from django.urls import path
 urlpatterns = [
     url(r'^$', views.homepage, name='home'),
     url(r'^store/$', views.store, name='store'),
-    url(r'^product/$', views.product, name='product'),
+    path(r'product/<slug:product_slug>', views.product, name='product'),
     url(r'^checkout/$', views.checkout, name='checkout'),
     # # url(r'^post/(?P<pk>[0-9]+)$', views.post_datail, name='post_datail'),
     # path('post/<int:pk>', views.post_detail, name='post_detail'),
