@@ -1,6 +1,7 @@
 {% extends '../base.html' %}
 
 {% load static %}
+{% block title %} - Product {% endblock %}
 {% block content %}
 {% include '../layouts/breadcrumb.html' %}
 
@@ -61,14 +62,15 @@
 							<h2 class="product-name">{{product.name}}</h2>
 							<div>
 								<div class="product-rating">
-									{% for item in ''|ljust:product.rait %}
-									<i class="fa fa-star">{{item}}</i>			
-									{% endfor %}
-									{% if product.rait < 5 %}														
-									{% for i in ''|ljust:product.rait|add:-5 %}											
-									<i class="fa fa-star-o"></i>			
-									{% endfor %}							
-									{% endif %}
+									{% with ''|center:5 as range %}
+											{% for _ in range %}
+												{% if forloop.counter <= product.rait %}
+												<i class="fa fa-star"></i>
+												{% else %}
+												<i class="fa fa-star-o"></i>
+												{% endif %}
+											{% endfor %}
+											{% endwith %}
 								</div>
 								<a class="review-link" href="#">10 Review(s) | Add your review</a>
 							</div>
@@ -80,8 +82,10 @@
 							<p>{{product.description}}</p>
 
 							
+							
 
-							<div class="add-to-cart">
+							<!-- <div class="add-to-cart">
+								
 								<div class="qty-label">
 									Qty
 									<div class="input-number">
@@ -90,9 +94,16 @@
 										<span class="qty-down">-</span>
 									</div>
 								</div>
-								<button class="add-to-cart-btn"><i class="fa fa-shopping-cart"></i> add to cart</button>
+								
+									
+							</div> -->
+							<div class="add-to-cart">										
+								<form action="{% url 'cart:cart_add' product_id=product.id %}" name="" method="POST">
+									{{ cart_product_form }}
+									{% csrf_token %}
+									<input type="submit" value="Select" class="add-to-cart-btn btn"><i class="fa fa-shopping-cart"></i> add to cart</input>
+								</form>
 							</div>
-
 							<ul class="product-btns">
 								<li><a href="#"><i class="fa fa-heart-o"></i> add to wishlist</a></li>
 								<li><a href="#"><i class="fa fa-exchange"></i> add to compare</a></li>

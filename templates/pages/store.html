@@ -1,6 +1,7 @@
 {% extends '../base.html' %}
 
 {% load static %}
+{% block title %} - Store {% endblock %}
 {% block content %}
 {% include '../layouts/breadcrumb.html' %}
 
@@ -234,47 +235,44 @@
 									</div>
 									<div class="product-body">
 										<p class="product-category">{{product.category}}</p>
-										<h3 class="product-name"><a href="{% url 'product' product_slug=product.slug %}">{{product.name}}</a></h3>
+										<h3 class="product-name"><a href="{% url 'shop:product' product_slug=product.slug %}">{{product.name}}</a></h3>
 										<h4 class="product-price">{{product.price}}{% if product.old_price %} <del class="product-old-price">{{product.old_price}}</del>{% endif %} </h4>
 										<div class="product-rating">
 
-											{% for item in ''|ljust:product.rait %}
-											<i class="fa fa-star">{{item}}</i>			
+											{% with ''|center:5 as range %}
+											{% for _ in range %}
+												{% if forloop.counter <= product.rait %}
+												<i class="fa fa-star"></i>
+												{% else %}
+												<i class="fa fa-star-o"></i>
+												{% endif %}
 											{% endfor %}
-											{% if product.rait < 5 %}														
-											{% for i in ''|ljust:product.rait|add:-5 %}											
-											<i class="fa fa-star-o"></i>			
-											{% endfor %}							
-											{% endif %}
-
-										</div>
+											{% endwith %}
+										</div>										
 										<div class="product-btns">
 											<button class="add-to-wishlist"><i class="fa fa-heart-o"></i><span class="tooltipp">add to wishlist</span></button>
 											<button class="add-to-compare"><i class="fa fa-exchange"></i><span class="tooltipp">add to compare</span></button>
 											<button class="quick-view"><i class="fa fa-eye"></i><span class="tooltipp">quick view</span></button>
 										</div>
 									</div>
-									<div class="add-to-cart">
-										<button class="add-to-cart-btn"><i class="fa fa-shopping-cart"></i> add to cart</button>
+									
+									<div class="add-to-cart">										
+										<form action="{% url 'cart:cart_add' product_id=product.id %}" name="" method="POST">
+											{{ cart_product_form }}
+											{% csrf_token %}
+											<input type="submit" value="Select" class="add-to-cart-btn btn"><i class="fa fa-shopping-cart"></i> add to cart</input>
+										</form>
 									</div>
-								</div>
+								</div>					
+			
 							</div>
 							<!-- /product -->
 							{% endfor %}
 							<div class="clearfix visible-sm visible-xs"></div>
-
-							<div class="clearfix visible-lg visible-md"></div>
-
-				
-							<div class="clearfix visible-sm visible-xs"></div>
-
-					
-							<div class="clearfix visible-lg visible-md visible-sm visible-xs"></div>
-
-					
-							<div class="clearfix visible-sm visible-xs"></div>
-
-						
+							<div class="clearfix visible-lg visible-md"></div>				
+							<div class="clearfix visible-sm visible-xs"></div>					
+							<div class="clearfix visible-lg visible-md visible-sm visible-xs"></div>					
+							<div class="clearfix visible-sm visible-xs"></div>						
 						</div>
 						<!-- /store products -->
 
