@@ -1,5 +1,5 @@
 {% load static %}
-
+{% load home_extras %}
 
 <!-- HEADER -->
 <header>
@@ -63,49 +63,84 @@
                             </a>
                         </div>
                         <!-- /Wishlist -->
-
+                        {% if request.get_full_path == "/cart/" %}
                         <!-- Cart -->
                         <div class="dropdown">
                             <a class="dropdown-toggle" data-toggle="dropdown" aria-expanded="true">
                                 <i class="fa fa-shopping-cart"></i>
                                 <span>Your Cart</span>
-                                <div class="qty">3</div>
+                                {% if count %}
+                                <div class="qty">{{count}}</div>
+                                {% endif %}
                             </a>
                             <div class="cart-dropdown">
-                                <div class="cart-list">
+                                <div class="cart-list">                              
+                                    {% for item in cart %}           
+                                    {% with product=item.product  %}
                                     <div class="product-widget">
                                         <div class="product-img">
-                                            <img src="{% static './img/product01.png' %}" alt="">
+                                            <img src="{% if product.main_photo %}{{product.main_photo.url}}{% else %} {% static 'img/placeholder-image.png' %} {% endif %}" alt="{{product.name}}">
                                         </div>
                                         <div class="product-body">
-                                            <h3 class="product-name"><a href="#">product name goes here</a></h3>
-                                            <h4 class="product-price"><span class="qty">1x</span>$980.00</h4>
+                                            <h3 class="product-name"><a href="{% url 'shop:product' product_slug=product.slug %}">{{product.name}}</a></h3>                                           
+                                            <h4 class="product-price"><span class="qty">{{ item.quantity }}x</span>{{item.price}}</h4>
                                         </div>
-                                        <button class="delete"><i class="fa fa-close"></i></button>
+                                        <a href="{% url 'cart:cart_remove' product_id=product.id %} " class="delete"><i class="fa fa-close"></i></a>
                                     </div>
-
-                                    <div class="product-widget">
-                                        <div class="product-img">
-                                            <img src="{% static './img/product02.png' %}" alt="">
-                                        </div>
-                                        <div class="product-body">
-                                            <h3 class="product-name"><a href="#">product name goes here</a></h3>
-                                            <h4 class="product-price"><span class="qty">3x</span>$980.00</h4>
-                                        </div>
-                                        <button class="delete"><i class="fa fa-close"></i></button>
-                                    </div>
-                                </div>
+                                    {% endwith %}
+                                    {% endfor %}                              
+                               </div>
                                 <div class="cart-summary">
-                                    <small>3 Item(s) selected</small>
-                                    <h5>SUBTOTAL: $2940.00</h5>
+                                    <small>{{count}} Item(s) selected</small>
+                                    <h5>SUBTOTAL: ${{cart.get_total_price}}</h5>                                                             
                                 </div>
                                 <div class="cart-btns">
-                                    <a href="#">View Cart</a>
-                                    <a href="#">Checkout  <i class="fa fa-arrow-circle-right"></i></a>
+                                    <a href="{% url 'cart:cart_detail' %}">View Cart</a>
+                                    <a href="{% url 'shop:checkout' %}">Checkout  <i class="fa fa-arrow-circle-right"></i></a>
                                 </div>
                             </div>
                         </div>
                         <!-- /Cart -->
+                        {% else %}
+                         <!-- Cart -->
+                        <div class="dropdown">
+                            <a class="dropdown-toggle" data-toggle="dropdown" aria-expanded="true">
+                                <i class="fa fa-shopping-cart"></i>
+                                <span>Your Cart</span>
+                                {% if count %}
+                                <div class="qty">{{count}}</div>
+                                {% endif %}
+                            </a>
+                            <div class="cart-dropdown">
+                                <div class="cart-list">                              
+                                    {% for  product in cart.product_list %}
+                                    {% with item=cart.cart|get_item:product.id %}
+                                    <div class="product-widget">
+                                        <div class="product-img">
+                                            <img src="{% if product.main_photo %}{{product.main_photo.url}}{% else %} {% static 'img/placeholder-image.png' %} {% endif %}" alt="{{product.name}}">
+                                        </div>
+                                        <div class="product-body">
+                                            <h3 class="product-name"><a href="{% url 'shop:product' product_slug=product.slug %}">{{product.name}}</a></h3>                                           
+                                            <h4 class="product-price"><span class="qty">{{ item.quantity }}x</span>{{product.price}}</h4>
+                                        </div>
+                                        <a href="{% url 'cart:cart_remove' product_id=product.id %} " class="delete"><i class="fa fa-close"></i></a>
+                                    </div>
+                                    {% endwith %}
+                                    {% endfor %}                             
+                                </div>
+                                <div class="cart-summary">
+                                    <small>{{count}} Item(s) selected</small>
+                                    <h5>SUBTOTAL: ${{cart.subtotal}}</h5>                                                             
+                                </div>
+                                <div class="cart-btns">
+                                    <a href="{% url 'cart:cart_detail' %}">View Cart</a>
+                                    <a href="{% url 'shop:checkout' %}">Checkout  <i class="fa fa-arrow-circle-right"></i></a>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- /Cart -->
+                        {% endif %}  
+                        
 
                         <!-- Menu Toogle -->
                         <div class="menu-toggle">
