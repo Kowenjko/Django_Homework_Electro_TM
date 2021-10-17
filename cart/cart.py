@@ -1,6 +1,8 @@
 from decimal import Decimal
 from django.conf import settings
-from shop.models import Product
+from shop.models import Product, Account_data
+
+from django.contrib.sessions.backends.db import SessionStore
 
 
 class Cart(object):

@@ -59,3 +59,17 @@
 - всі зміни за commits: Homework-8
 
 ---
+
+### Homework Django - 9
+
+---
+
+- Завдання:
+  - Підв'язати кошик до юзера через сесії або через модель
+
+---
+
+- Прив'язав кошик до користувача. Створив модель account_data туди передається username, key, value=json.dumps(value)
+- всі зміни за commits: Homework-9
+
+---

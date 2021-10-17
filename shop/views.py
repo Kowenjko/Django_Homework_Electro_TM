@@ -7,7 +7,9 @@ from django.conf import settings
 
 
 def homepage(request):
-    return render(request, 'pages/index.html')
+
+    return render(request, 'pages/index.html', {'cart': cart(request),
+                                                'count': count(request)})
 
 
 def store(request, category_slug=None):
@@ -21,7 +23,10 @@ def store(request, category_slug=None):
         products = products.objects.filter(category=category)
     cart_product_form = CartAddProductForm()
     cart_items = request.session.get(settings.CART_SESSION_ID)
-    pr = Product.objects.all().filter(id__in=cart_items)
+    pr = []
+    if cart_items:
+        product = cart_items.keys()
+        pr = Product.objects.filter(id__in=product)
     return render(request, 'pages/store.html', {'category': category,
                                                 'categories': categories,
                                                 'products': products,
@@ -50,30 +55,27 @@ def checkout(request):
 
 
 def count(request):
-    cart = request.session.get(settings.CART_SESSION_ID)    
-    cart_values = cart.values()
+    cart = request.session.get(settings.CART_SESSION_ID)
     count = 0
-    subtotal = 0
-    for item in cart_values:
-        count += item['quantity']
-        subtotal += item['quantity'] * float(item['price'])
-
-    cart_items_id = cart.keys()
-    product_list = Product.objects.filter(id__in=cart_items_id)
-
+    if cart:
+        cart_values = cart.values()
+        for item in cart_values:
+            count += item['quantity']
     return count
 
 
 def cart(request):
     cart = request.session.get(settings.CART_SESSION_ID)
-    cart_values = cart.values()
+    print('cart=>', cart)
     count = 0
     subtotal = 0
-    for item in cart_values:
-        count += item['quantity']
-        subtotal += item['quantity']*float(item['price'])
-
-    cart_items_id = cart.keys()
-    product_list = Product.objects.filter(id__in=cart_items_id)
+    product_list = []
+    if cart:
+        cart_values = cart.values()
+        for item in cart_values:
+            count += item['quantity']
+            subtotal += item['quantity']*float(item['price'])
+        cart_items_id = cart.keys()
+        product_list = Product.objects.filter(id__in=cart_items_id)
 
     return {'count': count, 'product_list': product_list, 'cart': cart, 'subtotal': subtotal}

@@ -4,6 +4,18 @@ from django.urls import reverse
 # Create your models here.
 
 
+class Account_data(models.Model):
+    username = models.CharField(max_length=30)
+    key = models.CharField(max_length=30)
+    value = models.CharField(max_length=30, null=True, blank=True)
+
+    class Meta:
+        unique_together = ("username", "key")
+
+    def __str__(self) -> str:
+        return self.name
+
+
 class Category(models.Model):
     name = models.CharField(max_length=200, db_index=True)
     slug = models.CharField(max_length=200, db_index=True, unique=True)
@@ -63,3 +75,8 @@ class Product(models.Model):
 
     def get_absolute_url(self):
         return reverse('shop:product_detail', kwargs={'product_slug': self.slug})
+
+
+class Order(models.Model):
+    product = models.ForeignKey(
+        Product, related_name='products', null=True, on_delete=models.SET_NULL)

@@ -13,7 +13,10 @@
             </ul>
             <ul class="header-links pull-right">
                 <li><a href="#"><i class="fa fa-dollar"></i> USD</a></li>
-                <li><a href="#"><i class="fa fa-user-o"></i> My Account</a></li>
+
+                <li><a href="{% url 'authenticate:login' %}"><i class="fa fa-user-o"></i> Log In</a></li>
+                <li><a href="{% url 'authenticate:signin' %}"><i class="fa fa-user-o"></i> Sign In</a></li>
+                <li><a href="{% url 'authenticate:logout' %}">{{user.get_username}}<i class="fa fa-user-o"></i> Log Out</a></li>
             </ul>
         </div>
     </div>
@@ -57,7 +60,7 @@
                         <!-- Wishlist -->
                         <div>
                             <a href="#">
-                                <i class="fa fa-heart-o"></i>
+                                <i class="fa fa-heart-o"></i> 
                                 <span>Your Wishlist</span>
                                 <div class="qty">2</div>
                             </a>
