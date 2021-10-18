@@ -75,8 +75,3 @@ class Product(models.Model):
 
     def get_absolute_url(self):
         return reverse('shop:product_detail', kwargs={'product_slug': self.slug})
-
-
-class Order(models.Model):
-    product = models.ForeignKey(
-        Product, related_name='products', null=True, on_delete=models.SET_NULL)

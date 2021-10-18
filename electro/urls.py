@@ -25,6 +25,7 @@ urlpatterns = [
     path('', include(('shop.urls', 'shop'), namespace='shop')),
     # re_path(r'', include('shop.urls')),
     path('cart/', include(('cart.urls', 'cart'), namespace='cart')),
+    path('orders/', include(('orders.urls', 'orders'), namespace='orders')),
     path('authenticate/', include(('authenticate.urls',
          'authenticate'), namespace='authenticate')),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

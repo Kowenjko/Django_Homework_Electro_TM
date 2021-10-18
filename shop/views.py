@@ -7,7 +7,6 @@ from django.conf import settings
 
 
 def homepage(request):
-
     return render(request, 'pages/index.html', {'cart': cart(request),
                                                 'count': count(request)})
 
@@ -47,13 +46,6 @@ def product(request,  product_slug):
                                                   })
 
 
-def checkout(request):
-    return render(request, 'pages/checkout.html', {
-        'cart': cart(request),
-        'count': count(request),
-    })
-
-
 def count(request):
     cart = request.session.get(settings.CART_SESSION_ID)
     count = 0
@@ -66,7 +58,6 @@ def count(request):
 
 def cart(request):
     cart = request.session.get(settings.CART_SESSION_ID)
-    print('cart=>', cart)
     count = 0
     subtotal = 0
     product_list = []

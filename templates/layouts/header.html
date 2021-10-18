@@ -13,10 +13,13 @@
             </ul>
             <ul class="header-links pull-right">
                 <li><a href="#"><i class="fa fa-dollar"></i> USD</a></li>
-
+                {% if not user.get_username %}
                 <li><a href="{% url 'authenticate:login' %}"><i class="fa fa-user-o"></i> Log In</a></li>
                 <li><a href="{% url 'authenticate:signin' %}"><i class="fa fa-user-o"></i> Sign In</a></li>
-                <li><a href="{% url 'authenticate:logout' %}">{{user.get_username}}<i class="fa fa-user-o"></i> Log Out</a></li>
+                {% else %}
+                <li><a href="{% url 'orders:detail' %}"><i class="fa fa-user-o"></i> {{user.get_username}}</a></li>
+                <li><a href="{% url 'authenticate:logout' %}"> Log Out</a></li>
+                {% endif %}
             </ul>
         </div>
     </div>
@@ -99,7 +102,7 @@
                                 </div>
                                 <div class="cart-btns">
                                     <a href="{% url 'cart:cart_detail' %}">View Cart</a>
-                                    <a href="{% url 'shop:checkout' %}">Checkout  <i class="fa fa-arrow-circle-right"></i></a>
+                                    <a href="{% url 'orders:checkout' %}">Checkout  <i class="fa fa-arrow-circle-right"></i></a>
                                 </div>
                             </div>
                         </div>
@@ -137,13 +140,12 @@
                                 </div>
                                 <div class="cart-btns">
                                     <a href="{% url 'cart:cart_detail' %}">View Cart</a>
-                                    <a href="{% url 'shop:checkout' %}">Checkout  <i class="fa fa-arrow-circle-right"></i></a>
+                                    <a href="{% url 'orders:checkout' %}">Checkout  <i class="fa fa-arrow-circle-right"></i></a>
                                 </div>
                             </div>
                         </div>
                         <!-- /Cart -->
-                        {% endif %}  
-                        
+                        {% endif %}               
 
                         <!-- Menu Toogle -->
                         <div class="menu-toggle">
