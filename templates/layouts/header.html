@@ -17,7 +17,7 @@
                 <li><a href="{% url 'authenticate:login' %}"><i class="fa fa-user-o"></i> Log In</a></li>
                 <li><a href="{% url 'authenticate:signin' %}"><i class="fa fa-user-o"></i> Sign In</a></li>
                 {% else %}
-                <li><a href="{% url 'orders:detail' %}"><i class="fa fa-user-o"></i> {{user.get_username}}</a></li>
+                <li><a href="{% url 'orders:orders' %}"><i class="fa fa-user-o"></i> {{user.get_username}}</a></li>
                 <li><a href="{% url 'authenticate:logout' %}"> Log Out</a></li>
                 {% endif %}
             </ul>
