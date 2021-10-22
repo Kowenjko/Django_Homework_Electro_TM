@@ -12,14 +12,38 @@ def homepage(request):
 
 
 def store(request, category_slug=None):
+
     category = None
     categories = Category.objects.all()
     brand = None
     brands = Brand.objects.all()
-    products = Product.objects.filter(available=True)
+    category_id_list = []
+    brand_id_list = []
+
+    for i in range(len(categories)):
+        if request.POST.get(f'category-{i+1}', False) == 'on':
+            category_id_list.append(i+1)
+
+    for i in range(len(brands)):
+        if request.POST.get(f'brand-{i+1}', False) == 'on':
+            brand_id_list.append(i+1)
+
+    if category_id_list and brand_id_list:
+        products = Product.objects.filter(
+            available=True, category__in=category_id_list, brand__in=brand_id_list)
+    elif category_id_list:
+        products = Product.objects.filter(
+            available=True, category__in=category_id_list)
+    elif brand_id_list:
+        products = Product.objects.filter(
+            available=True,  brand__in=brand_id_list)
+
+    else:
+        products = Product.objects.filter(available=True)
     if category_slug:
         category = get_object_or_404(Category, slug=category_slug)
-        products = products.objects.filter(category=category)
+        products = products.filter(category=category)
+
     cart_product_form = CartAddProductForm()
     cart_items = request.session.get(settings.CART_SESSION_ID)
     pr = []
@@ -27,11 +51,40 @@ def store(request, category_slug=None):
         product = cart_items.keys()
         pr = Product.objects.filter(id__in=product)
     return render(request, 'pages/store.html', {'category': category,
+                                                'brands': brands,
                                                 'categories': categories,
                                                 'products': products,
                                                 'cart_product_form': cart_product_form,
                                                 'cart': cart(request),
                                                 'cart_items': pr,
+                                                'count': count(request),
+                                                'category_id_list': category_id_list,
+                                                'brand_id_list': brand_id_list
+                                                })
+
+
+def store_by_category(request, category_slug=None):
+    category = None
+    categories = Category.objects.all()
+    brand = None
+    brands = Brand.objects.all()
+    products = Product.objects.filter(available=True)
+    print(products)
+    if category_slug:
+        category = get_object_or_404(Category, slug=category_slug)
+        products = products.filter(category=category)
+    cart_product_form = CartAddProductForm()
+    cart_items = request.session.get(settings.CART_SESSION_ID)
+    pr = []
+    if cart_items:
+        product = cart_items.keys()
+        # pr = Product.objects.filter(id__in=product)
+    return render(request, 'pages/store.html', {'category': category,
+                                                'categories': categories,
+                                                'products': products,
+                                                'cart_product_form': cart_product_form,
+                                                'cart': cart(request),
+                                                # 'cart_items': pr,
                                                 'count': count(request),
                                                 })
 
