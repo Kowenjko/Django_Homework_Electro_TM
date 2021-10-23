@@ -3,7 +3,16 @@ from .models import Product, Brand, Category
 from cart.forms import CartAddProductForm
 from cart.cart import Cart
 from django.conf import settings
+from django.core.paginator import Paginator
 # Create your views here.
+from django.views.generic import ListView
+
+ITEMS_PER_PAGE = 3
+
+
+class ProductList(ListView):
+    paginate_by = 3
+    model = Product
 
 
 def homepage(request):
@@ -50,6 +59,11 @@ def store(request, category_slug=None):
     if cart_items:
         product = cart_items.keys()
         pr = Product.objects.filter(id__in=product)
+    count_page = len(products)
+    # Show 25 contacts per page.
+    paginator = Paginator(products, ITEMS_PER_PAGE)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
     return render(request, 'pages/store.html', {'category': category,
                                                 'brands': brands,
                                                 'categories': categories,
@@ -59,17 +73,20 @@ def store(request, category_slug=None):
                                                 'cart_items': pr,
                                                 'count': count(request),
                                                 'category_id_list': category_id_list,
-                                                'brand_id_list': brand_id_list
+                                                'brand_id_list': brand_id_list,
+                                                'count_page': count_page,
+                                                'page_obj': page_obj,
+                                                'ITEMS_PER_PAGE': ITEMS_PER_PAGE
                                                 })
 
 
 def store_by_category(request, category_slug=None):
     category = None
     categories = Category.objects.all()
+
     brand = None
     brands = Brand.objects.all()
     products = Product.objects.filter(available=True)
-    print(products)
     if category_slug:
         category = get_object_or_404(Category, slug=category_slug)
         products = products.filter(category=category)
@@ -79,6 +96,9 @@ def store_by_category(request, category_slug=None):
     if cart_items:
         product = cart_items.keys()
         # pr = Product.objects.filter(id__in=product)
+    paginator = Paginator(products, ITEMS_PER_PAGE)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
     return render(request, 'pages/store.html', {'category': category,
                                                 'categories': categories,
                                                 'products': products,
@@ -86,13 +106,17 @@ def store_by_category(request, category_slug=None):
                                                 'cart': cart(request),
                                                 # 'cart_items': pr,
                                                 'count': count(request),
+                                                'page_obj': page_obj,
+                                                'ITEMS_PER_PAGE': ITEMS_PER_PAGE
                                                 })
 
 
 def product(request,  product_slug):
     product = get_object_or_404(Product, slug=product_slug)
     cart_product_form = CartAddProductForm()
+    category = get_object_or_404(Category, slug=product.category.slug)
     return render(request, 'pages/product.html', {'product': product,
+                                                  'category': category,
                                                   'cart_product_form': cart_product_form,
                                                   'cart': cart(request),
                                                   'count': count(request),

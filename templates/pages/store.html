@@ -158,13 +158,13 @@
 
 						<!-- store products -->
 						<div class="row">
-							{% for product in products %}
+							{% for product in page_obj %}
 							<!-- product -->
 							<div class="col-md-4 col-xs-6">
 								<div class="product">
 									<div class="product-img">
 										
-										<img src="{% if product.main_photo %}{{product.main_photo.url}}{% else %} {% static 'img/placeholder-image.png' %} {% endif %}" alt="{{product.name}}">
+										<img src="{% if product.main_photo %}{{product.main_photo.url}}{% else %} {% static 'img/placeholder-image.png' %} {% endif %}" height="250" alt="{{product.name}}">
 										<div class="product-label">
 											<span class="sale">-30%</span>
 											<span class="new">NEW</span>
@@ -196,9 +196,9 @@
 									
 									<div class="add-to-cart">										
 										<form action="{% url 'cart:cart_add' product_id=product.id %}" name="" method="POST">
-											{{ cart_product_form }}
+											<div class="text-info">{{ cart_product_form }}</div>
 											{% csrf_token %}
-											<input type="submit" value="Select" class="add-to-cart-btn btn"><i class="fa fa-shopping-cart"></i> add to cart</input>
+											<button type="submit" value="Select" class="add-to-cart-btn btn"><i class="fa fa-shopping-cart"></i> add to cart</button>
 										</form>
 									</div>
 								</div>					
@@ -206,25 +206,39 @@
 							</div>
 							<!-- /product -->
 							{% endfor %}
-							<div class="clearfix visible-sm visible-xs"></div>
+							<!-- <div class="clearfix visible-sm visible-xs"></div>
 							<div class="clearfix visible-lg visible-md"></div>				
 							<div class="clearfix visible-sm visible-xs"></div>					
 							<div class="clearfix visible-lg visible-md visible-sm visible-xs"></div>					
-							<div class="clearfix visible-sm visible-xs"></div>						
+							<div class="clearfix visible-sm visible-xs"></div>						 -->
 						</div>
 						<!-- /store products -->
 
-						<!-- store bottom filter -->
+						<!-- store bottom filter -->					
 						<div class="store-filter clearfix">
-							<span class="store-qty">Showing 20-100 products</span>
-							<ul class="store-pagination">
-								<li class="active">1</li>
-								<li><a href="#">2</a></li>
-								<li><a href="#">3</a></li>
-								<li><a href="#">4</a></li>
-								<li><a href="#"><i class="fa fa-angle-right"></i></a></li>
-							</ul>
-						</div>
+                        <span class="store-qty">Showing {{ITEMS_PER_PAGE}}-{{page_obj.paginator.count}} products</span>                
+                        <div class="pagination">
+                            <ul class="step-links store-pagination">
+                                {% if page_obj.has_previous %}
+                                <li><a href="?page=1">&laquo;</a></li>
+                                <li><a href="?page={{ page_obj.previous_page_number }}"><i class="fa fa-angle-left"></i></a></li>
+                                {% endif %}
+                                {% for i in page_obj.paginator %}
+                                    {% if forloop.counter == page_obj.number %}
+                                    <li class="active current">
+                                        {{ page_obj.number }}
+                                    </li>
+                                    {% else %}
+                                    <li><a href="?page={{forloop.counter}}">{{forloop.counter}}</a></li>
+                                    {% endif %}
+                                {% endfor %}                        
+                                {% if page_obj.has_next %}
+                                <li><a href="?page={{ page_obj.next_page_number }}"><i class="fa fa-angle-right"></i></a></li>
+                                <li><a href="?page={{ page_obj.paginator.num_pages }}">&raquo;</a></li>
+                                {% endif %}
+                            </ul>
+                        </div>
+                    </div>
 						<!-- /store bottom filter -->
 					</div>
 					<!-- /STORE -->
